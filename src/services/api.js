@@ -458,4 +458,3 @@ export function toggleConcluido(aulaId) {
   };
 }
 
-// *****************TUDO QUE FOR RELACIONADO A USUÁRIOS E AUTENTICAÇÃO****************
