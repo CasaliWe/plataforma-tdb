@@ -50,9 +50,10 @@ const Index = () => {
   const [selectedLevel, setSelectedLevel] = useState<string | 'Todos'>(searchParams.get('nivel') || 'Todos');
   const [selectedModulo, setSelectedModulo] = useState<number | null>(
     searchParams.get('modulo') ? Number(searchParams.get('modulo')) : null
-  );  const [loading, setLoading] = useState(true);
+  );
+  const [loading, setLoading] = useState(true);
   const isMobile = useIsMobile();
-  
+
   // Buscar dados de cursos
   useEffect(() => {
     const fetchData = async () => {
@@ -114,11 +115,10 @@ const Index = () => {
                   // Se a aula existir, iniciar sua reprodução automaticamente
                   setPlayingVideo(aulaNumero);
                   
-                  // Opcional: exibir um toast informando que o usuário está acessando um link direto
+                  // Exibir um toast informando que o usuário está acessando um link direto
                   toast({
                     title: "Link direto",
-                    description: "Você acessou uma aula através de um link direto.",
-                    duration: 3000
+                    description: "Você acessou uma aula através de um link direto."
                   });
                   
                   // Rolar até a aula após um curto atraso para garantir que os componentes foram carregados
@@ -259,7 +259,9 @@ const Index = () => {
         return newData;
       });
     }
-  };  return (
+  };
+
+  return (
     <div className="min-h-screen bg-background">
       <Header />
       <Toaster />
@@ -284,7 +286,9 @@ const Index = () => {
               <div className="text-sm text-muted-foreground">{stat.label}</div>
             </Card>
           ))}
-        </div>        {/* Filter Section - Níveis */}
+        </div>
+        
+        {/* Filter Section - Níveis */}
         <Card className="cartao-gradiente p-6">
           <div className="flex flex-col gap-4">
             <div className="flex items-center space-x-2">
@@ -296,7 +300,8 @@ const Index = () => {
                 <Button
                   key={level}
                   variant={selectedLevel === level ? "default" : "outline"}
-                  size="sm"                  onClick={() => {
+                  size="sm"
+                  onClick={() => {
                     setSelectedLevel(level);
                     setSelectedModulo(null); // Reset módulo selecionado ao trocar o nível
                     
@@ -306,12 +311,14 @@ const Index = () => {
                       setSearchParams(params => {
                         params.delete('nivel');
                         params.delete('modulo');
+                        params.delete('aula');
                         return params;
                       });
                     } else {
                       setSearchParams(params => {
                         params.set('nivel', level);
                         params.delete('modulo');
+                        params.delete('aula');
                         return params;
                       });
                     }
@@ -323,7 +330,9 @@ const Index = () => {
               ))}
             </div>
           </div>
-        </Card>        {/* Filter Section - Módulos (mostra apenas quando um nível específico é selecionado) */}
+        </Card>
+        
+        {/* Filter Section - Módulos (mostra apenas quando um nível específico é selecionado) */}
         {selectedLevel !== 'Todos' && modulosDoNivel.length > 0 && (
           <Card className="cartao-gradiente p-6">
             <div className="flex flex-col gap-4">
@@ -331,7 +340,8 @@ const Index = () => {
                 <Folder className="w-5 h-5 text-primary" />
                 <span className="font-medium text-foreground">Filtrar por módulo:</span>
               </div>
-              <div className={`${isMobile ? 'flex flex-col' : 'flex flex-wrap'} gap-2 w-full`}>                <Button
+              <div className={`${isMobile ? 'flex flex-col' : 'flex flex-wrap'} gap-2 w-full`}>
+                <Button
                   variant={selectedModulo === null ? "default" : "outline"}
                   size="sm"
                   onClick={() => {
@@ -339,6 +349,7 @@ const Index = () => {
                     // Atualizar URL removendo o parâmetro de módulo
                     setSearchParams(params => {
                       params.delete('modulo');
+                      params.delete('aula');
                       return params;
                     });
                   }}
@@ -346,7 +357,8 @@ const Index = () => {
                 >
                   Todos
                 </Button>
-                {modulosDoNivel.map((modulo) => (                  <Button
+                {modulosDoNivel.map((modulo) => (
+                  <Button
                     key={modulo.id}
                     variant={selectedModulo === modulo.id ? "default" : "outline"}
                     size="sm"
@@ -355,6 +367,7 @@ const Index = () => {
                       // Atualizar URL adicionando o parâmetro do módulo
                       setSearchParams(params => {
                         params.set('modulo', modulo.id.toString());
+                        params.delete('aula');
                         return params;
                       });
                     }}
@@ -404,6 +417,13 @@ const Index = () => {
                             onClick={() => {
                               setSelectedLevel(nivel.nome);
                               setSelectedModulo(modulo.id);
+                              
+                              // Atualizar a URL quando clicar em um módulo na visualização "Todos"
+                              setSearchParams(params => {
+                                params.set('nivel', nivel.nome);
+                                params.set('modulo', modulo.id.toString());
+                                return params;
+                              });
                             }}
                           >
                             Acessar módulo
@@ -432,7 +452,14 @@ const Index = () => {
                         <Button 
                           variant="default"
                           className="w-full botao-primario"
-                          onClick={() => setSelectedModulo(modulo.id)}
+                          onClick={() => {
+                            setSelectedModulo(modulo.id);
+                            // Atualizar URL ao clicar em um módulo específico
+                            setSearchParams(params => {
+                              params.set('modulo', modulo.id.toString());
+                              return params;
+                            });
+                          }}
                         >
                           Ver aulas
                         </Button>
@@ -473,24 +500,33 @@ const Index = () => {
                             </span>
                           </div>
                         </div>
-                          <div className="flex gap-2">
+                        
+                        <div className="flex gap-2">
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => setSelectedModulo(null)}
+                            onClick={() => {
+                              setSelectedModulo(null);
+                              // Atualizar URL removendo o módulo ao voltar
+                              setSearchParams(params => {
+                                params.delete('modulo');
+                                params.delete('aula');
+                                return params;
+                              });
+                            }}
                           >
                             Voltar para módulos
-                          </Button>                          <Button 
+                          </Button>
+                          <Button 
                             variant="outline" 
-                            size="sm"                            
+                            size="sm"
                             onClick={() => {
                               // Copiar o URL atual para a área de transferência
                               navigator.clipboard.writeText(window.location.href);
                               // Mostrar mensagem de sucesso com Toast
                               toast({
                                 title: "Link copiado!",
-                                description: "O link foi copiado para a área de transferência.",
-                                duration: 3000
+                                description: "O link foi copiado para a área de transferência."
                               });
                             }}
                           >
@@ -502,18 +538,35 @@ const Index = () => {
                       {/* Listagem de aulas */}
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {moduloSelecionado.aulas.map((aula) => (
-                          <div key={aula.id} className="space-y-3">
+                          <div key={aula.id} className="space-y-3" id={`aula-${aula.id}`}>
                             <VideoCard
                               title={aula.titulo}
                               description={aula.descricao}
                               duration={aula.duracao}
                               videoUrl={aula.videoUrl}
                               isPlaying={playingVideo === aula.id}
-                              onPlayPause={() => setPlayingVideo(playingVideo === aula.id ? null : aula.id)}
+                              onPlayPause={() => {
+                                const newPlayingVideo = playingVideo === aula.id ? null : aula.id;
+                                setPlayingVideo(newPlayingVideo);
+                                
+                                // Atualizar URL quando reproduzir/pausar vídeo
+                                if (newPlayingVideo) {
+                                  setSearchParams(params => {
+                                    params.set('aula', aula.id.toString());
+                                    return params;
+                                  });
+                                } else {
+                                  setSearchParams(params => {
+                                    params.delete('aula');
+                                    return params;
+                                  });
+                                }
+                              }}
                               isFavorite={aula.favorito}
                               onToggleFavorite={() => handleToggleFavorito(aula.id)}
                               isCompleted={aula.concluido}
-                            />                            <div className="flex flex-col gap-2">
+                            />
+                            <div className="flex flex-col gap-2">
                               <div className="flex items-center justify-between text-sm">
                                 <Button
                                   variant="ghost"
@@ -554,8 +607,7 @@ const Index = () => {
                                   // Mostrar toast
                                   toast({
                                     title: "Link da aula copiado!",
-                                    description: "O link foi copiado para a área de transferência.",
-                                    duration: 3000
+                                    description: "O link foi copiado para a área de transferência."
                                   });
                                 }}
                               >
