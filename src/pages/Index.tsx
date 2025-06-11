@@ -397,13 +397,18 @@ const Index = () => {
                           <h3 className="text-xl font-bold texto-gradiente mb-2">{modulo.titulo}</h3>
                           <p className="text-muted-foreground text-sm mb-4">
                             {modulo.aulas.length} aulas disponíveis
-                          </p>
-                          <Button 
+                          </p>                          <Button 
                             variant="default"
                             className="w-full botao-primario"
                             onClick={() => {
                               setSelectedLevel(nivel.nome);
                               setSelectedModulo(modulo.id);
+                              // Atualizar URL ao acessar módulo da visualização "Todos"
+                              setSearchParams(params => {
+                                params.set('nivel', nivel.nome);
+                                params.set('modulo', modulo.id.toString());
+                                return params;
+                              });
                             }}
                           >
                             Acessar módulo
