@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sistema de design dark para a landing page de bateria */
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 16 85% 55%;
+    --primary-foreground: 210 20% 98%;
+
+    --secondary: 30 70% 40%;
+    --secondary-foreground: 210 20% 98%;
+
+    --muted: 25 30% 16.9%;
+    --muted-foreground: 25 10% 70%;
+
+    --accent: 16 60% 35%;
+    --accent-foreground: 210 20% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 25 30% 16.9%;
+    --input: 25 30% 16.9%;
+    --ring: 16 85% 55%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 3.9%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 16 85% 55%;
+    --sidebar-primary-foreground: 210 20% 98%;
+    --sidebar-accent: 25 30% 16.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 25 30% 16.9%;
+    --sidebar-ring: 16 85% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background: linear-gradient(135deg, #0a0a0a 0%, #2d1309 50%, #0a0a0a 100%);
+    min-height: 100vh;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .secao-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  .botao-primario {
+    @apply bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105;
+  }
+
+  .botao-secundario {
+    @apply border-2 border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold py-3 px-8 rounded-lg transition-all duration-300;
+  }
+  .cartao-gradiente {
+    @apply bg-gradient-to-br from-gray-900/80 to-amber-900/20 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 shadow-2xl;
+  }
+
+  .texto-gradiente {
+    @apply bg-gradient-to-r from-amber-400 to-red-400 bg-clip-text text-transparent;
+  }
+
+  .sobreposicao-escura {
+    @apply absolute inset-0 bg-black/50 backdrop-blur-sm;
+  }
+}
+
+/* Animações personalizadas */
+@keyframes brilho-pulso {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(249, 115, 22, 0.6);
+  }
+}
+
+.animacao-brilho {
+  animation: brilho-pulso 2s ease-in-out infinite;
+}
+
+/* Efeito de partículas */
+.particulas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.particula {
+  position: absolute;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.8) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Animação de pulso para o botão de play/pause */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.9);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(249, 115, 22, 0);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.pulse-animation {
+  animation: pulse 0.8s ease-out;
+}
+
+/* Estilos para o player de vídeo customizado */
+.video-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.video-container:hover .play-button {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-container video::-webkit-media-controls {
+  display: none !important;
+}
+
+.video-container video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
+.play-button {
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.6);
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  position: absolute;
+  z-index: 100 !important;
+  transform: translate(-50%, -50%) !important;
+  top: 50% !important;
+  left: 50% !important;
+  user-select: none;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.play-button::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  bottom: -5px;
+  left: -5px;
+  border-radius: 50%;
+  background: transparent;
+  z-index: -1;
+  animation: pulse-border 2s infinite;
+  pointer-events: none;
+}
+
+.play-button * {
+  pointer-events: none;
+}
+
+.play-button .play-icon,
+.play-button .pause-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.2s ease;
+}
+
+.play-button::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  left: -10px;
+  cursor: pointer;
+}
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(249, 115, 22, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.play-button:hover {
+  transform: translate(-50%, -50%) scale(1.2) !important;
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.8);
+}
+
+/* Animação de flutuação para as partículas */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translateY(-10px) rotate(90deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translateY(-10px) rotate(270deg);
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 768px) {
+  .botao-primario,
+  .botao-secundario {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.875rem;
+  }
+}
