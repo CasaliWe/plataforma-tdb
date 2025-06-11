@@ -5,7 +5,7 @@ import VideoCard from '@/components/VideoCard';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BookOpen, Clock, Star, Trophy, Filter } from 'lucide-react';
+import { BookOpen, Heart, Star, CheckCircle, Filter } from 'lucide-react';
 
 const Index = () => {
   const [playingVideo, setPlayingVideo] = useState<number | null>(null);
@@ -63,12 +63,11 @@ const Index = () => {
   ];
 
   const levels = ['Todos', 'Iniciante', 'Intermediário', 'Avançado'];
-
   const stats = [
     { icon: BookOpen, label: 'Aulas Disponíveis', value: courses.length.toString() },
-    { icon: Clock, label: 'Tempo Total', value: '75h' },
+    { icon: Heart, label: 'Aulas Favoritas', value: '8' },
     { icon: Star, label: 'Níveis', value: '3' },
-    { icon: Trophy, label: 'Certificados', value: '12' }
+    { icon: CheckCircle, label: 'Aulas Concluídas', value: '15' }
   ];
 
   const getLevelColor = (level: string) => {
