@@ -99,6 +99,23 @@
     .botao-filtro-mobile:active {
       transform: translateY(1px);
     }
+    
+    /* Estilo para o cabeçalho do módulo em dispositivos móveis */
+    .modulo-cabecalho-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .modulo-cabecalho-mobile .botoes-acao {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .modulo-cabecalho-mobile .botoes-acao button {
+      flex: 1;
+    }
   }
 }
 

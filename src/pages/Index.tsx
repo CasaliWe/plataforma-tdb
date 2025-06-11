@@ -464,7 +464,7 @@ const Index = () => {
                   
                   return (
                     <div className="space-y-6">
-                      <div className="flex items-center justify-between">
+                      <div className={`${isMobile ? 'flex flex-col space-y-3' : 'flex items-center justify-between'}`}>
                         <div>
                           <h2 className="text-2xl font-bold texto-gradiente">
                             {moduloSelecionado.titulo}
@@ -478,16 +478,18 @@ const Index = () => {
                             </span>
                           </div>
                         </div>
-                          <div className="flex gap-2">
+                          <div className={`flex ${isMobile ? 'w-full' : ''} gap-2`}>
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setSelectedModulo(null)}
+                            className={`${isMobile ? 'flex-1' : ''}`}
                           >
                             Voltar para módulos
                           </Button>                          <Button 
                             variant="outline" 
-                            size="sm"                            
+                            size="sm"
+                            className={`${isMobile ? 'flex-1' : ''}`}                            
                             onClick={() => {
                               // Copiar o URL atual para a área de transferência
                               navigator.clipboard.writeText(window.location.href);
@@ -519,11 +521,11 @@ const Index = () => {
                               onToggleFavorite={() => handleToggleFavorito(aula.id)}
                               isCompleted={aula.concluido}
                             />                            <div className="flex flex-col gap-2">
-                              <div className="flex items-center justify-between text-sm">
+                              <div className={`${isMobile ? 'flex flex-col' : 'flex items-center justify-between'} text-sm gap-2`}>
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="text-xs flex items-center"
+                                  className={`text-xs flex items-center ${isMobile ? 'justify-start w-full' : ''}`}
                                   onClick={() => handleToggleFavorito(aula.id)}
                                 >
                                   <Heart className={`h-4 w-4 mr-1 ${aula.favorito ? 'text-red-500 fill-red-500' : ''}`} />
@@ -533,7 +535,7 @@ const Index = () => {
                                 <Button 
                                   variant="ghost" 
                                   size="sm"
-                                  className="text-xs flex items-center"
+                                  className={`text-xs flex items-center ${isMobile ? 'justify-start w-full' : ''}`}
                                   onClick={() => handleToggleConcluido(aula.id)}
                                 >
                                   <CheckCircle className={`h-4 w-4 mr-1 ${aula.concluido ? 'text-green-500' : ''}`} />
@@ -544,7 +546,7 @@ const Index = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-xs flex items-center justify-center"
+                                className={`text-xs flex items-center ${isMobile ? 'justify-start w-full' : 'justify-center'}`}
                                 onClick={() => {
                                   // Criar URL específica para a aula
                                   const params = new URLSearchParams();
