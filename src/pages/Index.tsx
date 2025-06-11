@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Heart, Star, CheckCircle, Filter, Folder } from 'lucide-react';
 import { getCursosData, toggleFavorito, toggleConcluido } from '@/services/api';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Tipos para a estrutura de dados
 interface Aula {
@@ -41,6 +42,7 @@ const Index = () => {
   const [selectedLevel, setSelectedLevel] = useState<string | 'Todos'>('Todos');
   const [selectedModulo, setSelectedModulo] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   // Buscar dados de cursos
   useEffect(() => {
@@ -202,16 +204,14 @@ const Index = () => {
               <div className="text-sm text-muted-foreground">{stat.label}</div>
             </Card>
           ))}
-        </div>
-
-        {/* Filter Section - Níveis */}
+        </div>        {/* Filter Section - Níveis */}
         <Card className="cartao-gradiente p-6">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center space-x-2">
               <Filter className="w-5 h-5 text-primary" />
               <span className="font-medium text-foreground">Filtrar por nível:</span>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className={`${isMobile ? 'flex flex-col' : 'flex flex-wrap'} gap-2 w-full`}>
               {levels.map((level) => (
                 <Button
                   key={level}
@@ -221,29 +221,27 @@ const Index = () => {
                     setSelectedLevel(level);
                     setSelectedModulo(null); // Reset módulo selecionado ao trocar o nível
                   }}
-                  className={selectedLevel === level ? "botao-primario" : ""}
+                  className={`${isMobile ? 'w-full justify-start botao-filtro-mobile' : ''} ${selectedLevel === level ? "botao-primario" : ""}`}
                 >
                   {level}
                 </Button>
               ))}
             </div>
           </div>
-        </Card>
-
-        {/* Filter Section - Módulos (mostra apenas quando um nível específico é selecionado) */}
+        </Card>        {/* Filter Section - Módulos (mostra apenas quando um nível específico é selecionado) */}
         {selectedLevel !== 'Todos' && modulosDoNivel.length > 0 && (
           <Card className="cartao-gradiente p-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex flex-col gap-4">
               <div className="flex items-center space-x-2">
                 <Folder className="w-5 h-5 text-primary" />
                 <span className="font-medium text-foreground">Filtrar por módulo:</span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className={`${isMobile ? 'flex flex-col' : 'flex flex-wrap'} gap-2 w-full`}>
                 <Button
                   variant={selectedModulo === null ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedModulo(null)}
-                  className={selectedModulo === null ? "botao-primario" : ""}
+                  className={`${isMobile ? 'w-full justify-start botao-filtro-mobile' : ''} ${selectedModulo === null ? "botao-primario" : ""}`}
                 >
                   Todos
                 </Button>
@@ -253,7 +251,7 @@ const Index = () => {
                     variant={selectedModulo === modulo.id ? "default" : "outline"}
                     size="sm"
                     onClick={() => setSelectedModulo(modulo.id)}
-                    className={selectedModulo === modulo.id ? "botao-primario" : ""}
+                    className={`${isMobile ? 'w-full justify-start botao-filtro-mobile' : ''} ${selectedModulo === modulo.id ? "botao-primario" : ""}`}
                   >
                     {modulo.titulo}
                   </Button>
