@@ -299,6 +299,7 @@ const Index = () => {
                   size="sm"                  onClick={() => {
                     setSelectedLevel(level);
                     setSelectedModulo(null); // Reset módulo selecionado ao trocar o nível
+                    setPlayingVideo(null); // Parar qualquer vídeo em reprodução
                     
                     // Atualizar URL
                     if (level === 'Todos') {
@@ -306,12 +307,14 @@ const Index = () => {
                       setSearchParams(params => {
                         params.delete('nivel');
                         params.delete('modulo');
+                        params.delete('aula');
                         return params;
                       });
                     } else {
                       setSearchParams(params => {
                         params.set('nivel', level);
                         params.delete('modulo');
+                        params.delete('aula');
                         return params;
                       });
                     }
@@ -333,12 +336,13 @@ const Index = () => {
               </div>
               <div className={`${isMobile ? 'flex flex-col' : 'flex flex-wrap'} gap-2 w-full`}>                <Button
                   variant={selectedModulo === null ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => {
+                  size="sm"                  onClick={() => {
                     setSelectedModulo(null);
-                    // Atualizar URL removendo o parâmetro de módulo
+                    setPlayingVideo(null); // Parar qualquer vídeo em reprodução
+                    // Atualizar URL removendo o parâmetro de módulo e de aula
                     setSearchParams(params => {
                       params.delete('modulo');
+                      params.delete('aula');
                       return params;
                     });
                   }}
@@ -349,12 +353,13 @@ const Index = () => {
                 {modulosDoNivel.map((modulo) => (                  <Button
                     key={modulo.id}
                     variant={selectedModulo === modulo.id ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
+                    size="sm"                    onClick={() => {
                       setSelectedModulo(modulo.id);
-                      // Atualizar URL adicionando o parâmetro do módulo
+                      setPlayingVideo(null); // Parar qualquer vídeo em reprodução
+                      // Atualizar URL adicionando o parâmetro do módulo e removendo o parâmetro de aula
                       setSearchParams(params => {
                         params.set('modulo', modulo.id.toString());
+                        params.delete('aula');
                         return params;
                       });
                     }}
@@ -478,15 +483,23 @@ const Index = () => {
                             </span>
                           </div>
                         </div>
-                          <div className={`flex ${isMobile ? 'w-full' : ''} gap-2`}>
-                          <Button 
+                          <div className={`flex ${isMobile ? 'w-full' : ''} gap-2`}>                          <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => setSelectedModulo(null)}
+                            onClick={() => {
+                              setSelectedModulo(null);
+                              setPlayingVideo(null);
+                              // Atualizar URL para remover parâmetro de aula
+                              setSearchParams(params => {
+                                params.delete('modulo');
+                                params.delete('aula');
+                                return params;
+                              });
+                            }}
                             className={`${isMobile ? 'flex-1' : ''}`}
                           >
                             Voltar para módulos
-                          </Button>                          <Button 
+                          </Button><Button 
                             variant="outline" 
                             size="sm"
                             className={`${isMobile ? 'flex-1' : ''}`}                            
@@ -506,21 +519,34 @@ const Index = () => {
                         </div>
                       </div>
                       
-                      {/* Listagem de aulas */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {/* Listagem de aulas */}                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {moduloSelecionado.aulas.map((aula) => (
-                          <div key={aula.id} className="space-y-3">
-                            <VideoCard
+                          <div key={aula.id} id={`aula-${aula.id}`} className="space-y-3"><VideoCard
                               title={aula.titulo}
                               description={aula.descricao}
                               duration={aula.duracao}
                               videoUrl={aula.videoUrl}
                               isPlaying={playingVideo === aula.id}
-                              onPlayPause={() => setPlayingVideo(playingVideo === aula.id ? null : aula.id)}
+                              onPlayPause={() => {
+                                const newPlayingVideoId = playingVideo === aula.id ? null : aula.id;
+                                setPlayingVideo(newPlayingVideoId);
+                                
+                                // Atualizar a URL quando um vídeo é iniciado ou pausado
+                                setSearchParams(params => {
+                                  if (newPlayingVideoId === null) {
+                                    // Se o vídeo for pausado, remove o parâmetro de aula
+                                    params.delete('aula');
+                                  } else {
+                                    // Se o vídeo for iniciado, adiciona o parâmetro de aula
+                                    params.set('aula', newPlayingVideoId.toString());
+                                  }
+                                  return params;
+                                });
+                              }}
                               isFavorite={aula.favorito}
                               onToggleFavorite={() => handleToggleFavorito(aula.id)}
                               isCompleted={aula.concluido}
-                            />                            <div className="flex flex-col gap-2">
+                            /><div className="flex flex-col gap-2">
                               <div className={`${isMobile ? 'flex flex-col' : 'flex items-center justify-between'} text-sm gap-2`}>
                                 <Button
                                   variant="ghost"
