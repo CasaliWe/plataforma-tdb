@@ -47,10 +47,12 @@ const Index = () => {
   const [playingVideo, setPlayingVideo] = useState<number | null>(
     searchParams.get('aula') ? Number(searchParams.get('aula')) : null
   );
-  const [selectedLevel, setSelectedLevel] = useState<string | 'Todos'>(searchParams.get('nivel') || 'Todos');
-  const [selectedModulo, setSelectedModulo] = useState<number | null>(
+  const [selectedLevel, setSelectedLevel] = useState<string | 'Todos'>(searchParams.get('nivel') || 'Todos');  const [selectedModulo, setSelectedModulo] = useState<number | null>(
     searchParams.get('modulo') ? Number(searchParams.get('modulo')) : null
-  );  const [loading, setLoading] = useState(true);
+  );
+  const [loading, setLoading] = useState(true);
+  // Flag para identificar se é o carregamento inicial da página
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const isMobile = useIsMobile();
   
   // Buscar dados de cursos
@@ -109,17 +111,18 @@ const Index = () => {
                     params.delete('aula');
                     return params;
                   });
-                  setPlayingVideo(null);
-                } else {
+                  setPlayingVideo(null);                } else {
                   // Se a aula existir, iniciar sua reprodução automaticamente
                   setPlayingVideo(aulaNumero);
                   
-                  // Opcional: exibir um toast informando que o usuário está acessando um link direto
-                  toast({
-                    title: "Link direto",
-                    description: "Você acessou uma aula através de um link direto.",
-                    duration: 3000
-                  });
+                  // Exibir um toast apenas se for o carregamento inicial da página
+                  if (isInitialLoad) {
+                    toast({
+                      title: "Link direto",
+                      description: "Você acessou uma aula através de um link direto.",
+                      duration: 3000
+                    });
+                  }
                   
                   // Rolar até a aula após um curto atraso para garantir que os componentes foram carregados
                   setTimeout(() => {
@@ -136,9 +139,10 @@ const Index = () => {
           console.error("Erro ao buscar dados de cursos");
         }
       } catch (error) {
-        console.error("Erro ao buscar dados de cursos:", error);
-      } finally {
+        console.error("Erro ao buscar dados de cursos:", error);      } finally {
         setLoading(false);
+        // Depois de carregar os dados, definimos que não é mais o carregamento inicial
+        setIsInitialLoad(false);
       }
     };
 
@@ -527,11 +531,11 @@ const Index = () => {
                               duration={aula.duracao}
                               videoUrl={aula.videoUrl}
                               isPlaying={playingVideo === aula.id}
-                              onPlayPause={() => {
-                                const newPlayingVideoId = playingVideo === aula.id ? null : aula.id;
+                              onPlayPause={() => {                                const newPlayingVideoId = playingVideo === aula.id ? null : aula.id;
                                 setPlayingVideo(newPlayingVideoId);
                                 
                                 // Atualizar a URL quando um vídeo é iniciado ou pausado
+                                // Sem exibir o toast, pois esta interação é manual do usuário
                                 setSearchParams(params => {
                                   if (newPlayingVideoId === null) {
                                     // Se o vídeo for pausado, remove o parâmetro de aula
